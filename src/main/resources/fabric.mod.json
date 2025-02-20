@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "fullbright",
+	"version": "${version}",
+	"name": "Fullbright",
+	"description": "Activate maximum lighting in Minecraft with two modes: moderate for enhanced visibility or extreme to eliminate all darkness.",
+	"authors": [
+		"Quentin Fouilleul"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/frquentin/fullbright-fabric"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fullbright/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"fr.quentin.fullbright.Fullbright"
+		],
+		"client": [
+			"fr.quentin.fullbright.FullbrightClient"
+		]
+	},
+	"mixins": [
+		"fullbright.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
