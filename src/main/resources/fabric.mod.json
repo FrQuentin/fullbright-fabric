@@ -3,7 +3,7 @@
 	"id": "fullbright",
 	"version": "${version}",
 	"name": "Fullbright",
-	"description": "Activate maximum lighting in Minecraft with two modes: moderate for enhanced visibility or extreme to eliminate all darkness.",
+	"description": "The Fullbright mod provides a night vision effect exclusively on the client side.",
 	"authors": [
 		"Quentin Fouilleul"
 	],

@@ -1,0 +1,11 @@
+{
+  "fullbright.on": "§8[§a!§8] §7Fullbright activated",
+  "fullbright.already_on": "§8[§c!§8] §cFullbright already activated",
+  "fullbright.off": "§8[§a!§8] §7Fullbright deactivated",
+  "fullbright.already_off": "§8[§c!§8] §cFullbright already deactivated",
+  "fullbright.help.title": "§7§m                §r §bFullbright Help §7§m                ",
+  "fullbright.help.description": "§7List of available commands:",
+  "fullbright.help.toggle": "§8∙ §3/fullbright: §7Toggles Fullbright on/off",
+  "fullbright.help.on": "§8∙ §3/fullbright <on>: §7Enables Fullbright",
+  "fullbright.help.off": "§8∙ §3/fullbright <off>: §7Disables Fullbright"
+}
