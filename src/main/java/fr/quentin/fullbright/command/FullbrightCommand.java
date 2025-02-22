@@ -77,7 +77,7 @@ public class FullbrightCommand {
             if (config.isEnabled()) {
                 player.addStatusEffect(new StatusEffectInstance(
                         StatusEffects.NIGHT_VISION,
-                        200,
+                        300,
                         0,
                         false,
                         false,
@@ -87,5 +87,9 @@ public class FullbrightCommand {
                 player.removeStatusEffect(StatusEffects.NIGHT_VISION);
             }
         }
+    }
+
+    public static FullbrightConfig getConfig() {
+        return config;
     }
 }
