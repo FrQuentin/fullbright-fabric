@@ -14,6 +14,7 @@ public class FullbrightConfig {
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "fullbright.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private boolean enabled = false;
+    private boolean showOverlay = true;
 
     public boolean isEnabled() {
         return enabled;
@@ -21,6 +22,15 @@ public class FullbrightConfig {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        save();
+    }
+
+    public boolean isShowOverlay() {
+        return showOverlay;
+    }
+
+    public void setShowOverlay(boolean showOverlay) {
+        this.showOverlay = showOverlay;
         save();
     }
 

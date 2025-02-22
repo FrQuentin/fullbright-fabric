@@ -21,15 +21,44 @@ public class FullbrightCommand {
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register(ClientCommandManager.literal("fullbright")
-                    .executes(FullbrightCommand::toggleFullbright)
+                    .executes(context -> {
+                        context.getSource().sendFeedback(Text.translatable("fullbright.command.hint"));
+                        return Command.SINGLE_SUCCESS;
+                    })
                     .then(ClientCommandManager.literal("on")
                             .executes(FullbrightCommand::enableFullbright))
                     .then(ClientCommandManager.literal("off")
                             .executes(FullbrightCommand::disableFullbright))
                     .then(ClientCommandManager.literal("help")
                             .executes(FullbrightCommand::displayHelp))
+                    .then(ClientCommandManager.literal("overlay")
+                            .then(ClientCommandManager.literal("on")
+                                    .executes(FullbrightCommand::enableOverlay))
+                            .then(ClientCommandManager.literal("off")
+                                    .executes(FullbrightCommand::disableOverlay))
+                    )
             );
         });
+    }
+
+    private static int enableOverlay(CommandContext<FabricClientCommandSource> context) {
+        if (!config.isShowOverlay()) {
+            config.setShowOverlay(true);
+            context.getSource().sendFeedback(Text.translatable("fullbright.overlay.on"));
+        } else {
+            context.getSource().sendFeedback(Text.translatable("fullbright.overlay.already_on"));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int disableOverlay(CommandContext<FabricClientCommandSource> context) {
+        if (config.isShowOverlay()) {
+            config.setShowOverlay(false);
+            context.getSource().sendFeedback(Text.translatable("fullbright.overlay.off"));
+        } else {
+            context.getSource().sendFeedback(Text.translatable("fullbright.overlay.already_off"));
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int enableFullbright(CommandContext<FabricClientCommandSource> context) {
@@ -52,22 +81,14 @@ public class FullbrightCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int toggleFullbright(CommandContext<FabricClientCommandSource> context) {
-        config.setEnabled(!config.isEnabled());
-        if (config.isEnabled()) {
-            context.getSource().sendFeedback(Text.translatable("fullbright.on"));
-        } else {
-            context.getSource().sendFeedback(Text.translatable("fullbright.off"));
-        }
-        return Command.SINGLE_SUCCESS;
-    }
-
     private static int displayHelp(CommandContext<FabricClientCommandSource> context) {
         context.getSource().sendFeedback(Text.translatable("fullbright.help.title"));
         context.getSource().sendFeedback(Text.translatable("fullbright.help.description"));
         context.getSource().sendFeedback(Text.translatable("fullbright.help.toggle"));
         context.getSource().sendFeedback(Text.translatable("fullbright.help.on"));
         context.getSource().sendFeedback(Text.translatable("fullbright.help.off"));
+        context.getSource().sendFeedback(Text.translatable("fullbright.help.overlay.on"));
+        context.getSource().sendFeedback(Text.translatable("fullbright.help.overlay.off"));
         return Command.SINGLE_SUCCESS;
     }
 

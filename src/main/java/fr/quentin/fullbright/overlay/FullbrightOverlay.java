@@ -35,6 +35,10 @@ public class FullbrightOverlay {
     }
 
     private static void renderOverlay(DrawContext context) {
+        if (!config.isShowOverlay()) {
+            return;
+        }
+
         context.drawTexture(
                 RenderLayer::getGuiTextured,
                 TEXTURE,
