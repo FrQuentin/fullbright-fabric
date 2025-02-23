@@ -15,5 +15,12 @@
   "fullbright.help.off": "§8∙ §3/fullbright off: §7Disables Fullbright",
   "fullbright.help.overlay.on": "§8∙ §3/fullbright overlay on: §7Enables Fullbright overlay",
   "fullbright.help.overlay.off": "§8∙ §3/fullbright overlay off: §7Disables Fullbright overlay",
-  "fullbright.command.hint": "§7For a list of Fullbright commands, type §3/fullbright help"
+  "fullbright.command.hint": "§7For a list of Fullbright commands, type §3/fullbright help",
+  "key.category.fullbright": "Fullbright Configuration",
+  "fullbright.configuration_keybinding": "Open/Close Configuration Screen",
+  "fullbright.screen.configuration": "Fullbright Configuration Screen",
+  "fullbright.button.on": "ON",
+  "fullbright.button.off": "OFF",
+  "fullbright.option.enabled": "Fullbright",
+  "fullbright.option.overlay": "Status Overlay"
 }

@@ -16,23 +16,32 @@ import java.io.IOException;
  */
 public class FullbrightConfig {
     /**
+     * Singleton instance of the configuration.
+     * Ensures that only one instance of the configuration is used throughout the application.
+     */
+    private static FullbrightConfig instance;
+
+    /**
      * The location where the config file will be stored.
+     * Uses the Fabric loader's config directory to resolve the path.
      */
     private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("fullbright.json").toFile();
 
     /**
      * Gson instance for JSON serialization/deserialization.
-     * Configured to create human-readable JSON files.
+     * Configured to create human-readable JSON files with pretty printing.
      */
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Whether the fullbright effect is currently enabled.
+     * Defaults to false.
      */
     private boolean enabled = false;
 
     /**
      * Whether the status overlay should be displayed.
+     * Defaults to true.
      */
     private boolean showOverlay = true;
 
@@ -42,7 +51,7 @@ public class FullbrightConfig {
      */
     public void save() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
-            GSON.toJson(this, writer);
+            GSON.toJson(this, writer); // Serialize the current configuration to JSON and write to file
         } catch (IOException e) {
             Fullbright.LOGGER.error("Error saving Fullbright configuration", e);
         }
@@ -56,33 +65,67 @@ public class FullbrightConfig {
     public static FullbrightConfig load() {
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
-                return GSON.fromJson(reader, FullbrightConfig.class);
+                instance = GSON.fromJson(reader, FullbrightConfig.class); // Deserialize the JSON file to a configuration object
+                return instance;
             } catch (IOException e) {
                 Fullbright.LOGGER.error("Error loading Fullbright configuration", e);
             }
         }
 
-        FullbrightConfig config = new FullbrightConfig();
-        config.save();
-        return config;
+        // If the config file does not exist, create a new configuration instance
+        instance = new FullbrightConfig();
+        instance.save(); // Save the default configuration to disk
+        return instance;
     }
 
-    // Getters and setters
+    /**
+     * Gets the singleton instance of the configuration.
+     * If the instance is null, it loads the configuration from disk.
+     *
+     * @return The singleton instance of the configuration
+     */
+    public static FullbrightConfig getInstance() {
+        if (instance == null) {
+            instance = load();
+        }
+        return instance;
+    }
+
+    /**
+     * Checks if the fullbright effect is enabled.
+     *
+     * @return True if the fullbright effect is enabled, false otherwise
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets whether the fullbright effect is enabled.
+     *
+     * @param enabled True to enable the fullbright effect, false to disable it
+     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        save();
+        save(); // Save the configuration whenever the enabled state changes
     }
 
+    /**
+     * Checks if the status overlay should be displayed.
+     *
+     * @return True if the status overlay should be displayed, false otherwise
+     */
     public boolean isShowOverlay() {
         return showOverlay;
     }
 
+    /**
+     * Sets whether the status overlay should be displayed.
+     *
+     * @param showOverlay True to display the status overlay, false to hide it
+     */
     public void setShowOverlay(boolean showOverlay) {
         this.showOverlay = showOverlay;
-        save();
+        save(); // Save the configuration whenever the overlay visibility changes
     }
 }
