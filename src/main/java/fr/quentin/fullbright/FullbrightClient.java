@@ -1,9 +1,11 @@
 package fr.quentin.fullbright;
 
 import fr.quentin.fullbright.command.FullbrightCommand;
+import fr.quentin.fullbright.config.NoteConfig;
 import fr.quentin.fullbright.option.KeyBindings;
 import fr.quentin.fullbright.overlay.FullbrightOverlay;
 import fr.quentin.fullbright.screen.FullbrightOptionsScreen;
+import fr.quentin.fullbright.screen.SimpleTextEditorScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
@@ -38,6 +40,12 @@ public class FullbrightClient implements ClientModInitializer {
             if (client.player != null && KeyBindings.configurationKey.wasPressed()) {
                 // Open the Fullbright configuration screen
                 client.setScreen(new FullbrightOptionsScreen(client.currentScreen, client.options));
+            }
+
+            // Check if the text editor key binding was pressed
+            if (client.player != null && KeyBindings.textEditorKey.wasPressed()) {
+                // Open the SimpleTextEditorScreen with the current note
+                client.setScreen(new SimpleTextEditorScreen(NoteConfig.getInstance().getNote()));
             }
         });
     }

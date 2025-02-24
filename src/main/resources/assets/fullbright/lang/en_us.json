@@ -22,5 +22,10 @@
   "fullbright.button.on": "ON",
   "fullbright.button.off": "OFF",
   "fullbright.option.enabled": "Fullbright",
-  "fullbright.option.overlay": "Status Overlay"
+  "fullbright.option.overlay": "Status Overlay",
+  "fullbright.screen.text_editor": "Fullbright Text Editor Screen",
+  "fullbright.screen.text_editor.name": "Text editor",
+  "fullbright.button.save": "Save",
+  "fullbright.button.cancel": "Cancel",
+  "fullbright.button.clear": "Clear All"
 }

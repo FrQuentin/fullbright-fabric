@@ -18,6 +18,12 @@ public class KeyBindings {
     public static KeyBinding configurationKey;
 
     /**
+     * Key binding for opening the text editor.
+     * This key binding allows users to quickly access the text editor.
+     */
+    public static KeyBinding textEditorKey;
+
+    /**
      * Registers the key bindings for the mod.
      * This method should be called during the mod's initialization to ensure key bindings are available.
      */
@@ -28,6 +34,16 @@ public class KeyBindings {
                         Fullbright.MOD_ID + ".configuration_keybinding", // Unique identifier for the key binding
                         InputUtil.Type.KEYSYM, // Type of input (keyboard key)
                         GLFW.GLFW_KEY_G, // Default key (G key)
+                        "key.category.fullbright" // Category for the key binding in the controls menu
+                )
+        );
+
+        // Register a new key binding for the text editor action
+        textEditorKey = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        Fullbright.MOD_ID + ".text_editor_keybinding", // Unique identifier for the key binding
+                        InputUtil.Type.KEYSYM, // Type of input (keyboard key)
+                        GLFW.GLFW_KEY_N, // Default key (N key)
                         "key.category.fullbright" // Category for the key binding in the controls menu
                 )
         );
