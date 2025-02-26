@@ -77,9 +77,19 @@ public class EditBox extends ClickableWidget {
     private boolean isSelecting = false;
 
     /**
-     * Flag indicating if the cursor is visible.
+     * Time counter for cursor blinking animation.
      */
-    private final boolean cursorVisible = true;
+    private long cursorBlinkTime = 0;
+
+    /**
+     * Flag indicating if the cursor is currently visible (for blinking effect).
+     */
+    private boolean isCursorVisible = true;
+
+    /**
+     * Cursor blink rate in milliseconds.
+     */
+    private static final long CURSOR_BLINK_RATE = 500;
 
     /**
      * Constructs a new EditBox widget.
@@ -93,6 +103,7 @@ public class EditBox extends ClickableWidget {
         super(x, y, width, height, Text.of(""));
         this.client = MinecraftClient.getInstance();
         lines.add(""); // Initialize with an empty line
+        this.cursorBlinkTime = System.currentTimeMillis();
     }
 
     /**
@@ -165,6 +176,27 @@ public class EditBox extends ClickableWidget {
     }
 
     /**
+     * Handles mouse scroll events for the edit box.
+     *
+     * @param mouseX  The x-coordinate of the mouse.
+     * @param mouseY  The y-coordinate of the mouse.
+     * @param horizontalAmount  The amount of horizontal scrolling.
+     * @param verticalAmount  The amount of vertical scrolling.
+     * @return True if the scrolling was handled, false otherwise.
+     */
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if (mouseX >= this.getX() && mouseX <= this.getX() + this.width &&
+                mouseY >= this.getY() && mouseY <= this.getY() + this.height) {
+            // Scroll up (amount > 0) or down (amount < 0)
+            int maxScrollOffset = Math.max(0, lines.size() - MAX_VISIBLE_LINES);
+            scrollOffset = (int) Math.max(0, Math.min(maxScrollOffset, scrollOffset - verticalAmount));
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    }
+
+    /**
      * Handles key press events for the edit box.
      *
      * @param keyCode   The key code of the key that was pressed.
@@ -175,6 +207,9 @@ public class EditBox extends ClickableWidget {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         boolean isControlDown = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0;
+
+        // Reset cursor blink timer on key press to make cursor visible
+        resetCursorBlink();
 
         if (isControlDown) {
             if (keyCode == GLFW.GLFW_KEY_C) {
@@ -302,6 +337,14 @@ public class EditBox extends ClickableWidget {
     }
 
     /**
+     * Resets the cursor blink timer to make the cursor visible.
+     */
+    private void resetCursorBlink() {
+        cursorBlinkTime = System.currentTimeMillis();
+        isCursorVisible = true;
+    }
+
+    /**
      * Deletes the currently selected text.
      */
     private void deleteSelectedText() {
@@ -359,6 +402,7 @@ public class EditBox extends ClickableWidget {
             cursorX = lastNewLine.length();
         }
         adjustScroll();
+        resetCursorBlink();
     }
 
     /**
@@ -410,6 +454,7 @@ public class EditBox extends ClickableWidget {
             String currentLine = lines.get(cursorY);
             lines.set(cursorY, currentLine.substring(0, cursorX) + chr + currentLine.substring(cursorX));
             cursorX++;
+            resetCursorBlink();
             return true;
         }
         return false;
@@ -427,6 +472,8 @@ public class EditBox extends ClickableWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int scrollbarWidth = 6;
         int scrollbarX = this.getX() + this.width - scrollbarWidth;
+
+        resetCursorBlink();
 
         if (mouseX >= scrollbarX && mouseX <= scrollbarX + scrollbarWidth &&
                 mouseY >= this.getY() && mouseY <= this.getY() + this.height) {
@@ -563,6 +610,17 @@ public class EditBox extends ClickableWidget {
     }
 
     /**
+     * Updates the blink state of the cursor based on elapsed time.
+     */
+    private void updateCursorBlink() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - cursorBlinkTime > CURSOR_BLINK_RATE) {
+            isCursorVisible = !isCursorVisible;
+            cursorBlinkTime = currentTime;
+        }
+    }
+
+    /**
      * Renders the edit box widget.
      *
      * @param context The drawing context provided by the game.
@@ -572,6 +630,9 @@ public class EditBox extends ClickableWidget {
      */
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        // Update cursor blink state
+        updateCursorBlink();
+
         context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF222222);
 
         int scrollbarWidth = 6;
@@ -618,7 +679,8 @@ public class EditBox extends ClickableWidget {
             y += 15;
         }
 
-        if (cursorVisible && cursorY >= scrollOffset && cursorY < scrollOffset + MAX_VISIBLE_LINES) {
+        // Draw cursor only if it should be visible according to blink state
+        if (isCursorVisible && cursorY >= scrollOffset && cursorY < scrollOffset + MAX_VISIBLE_LINES) {
             int cursorPosY = this.getY() + 5 + (cursorY - scrollOffset) * 15;
             int cursorPosX = this.getX() + 5 + this.client.textRenderer.getWidth(lines.get(cursorY).substring(0, cursorX));
             context.fill(cursorPosX, cursorPosY, cursorPosX + 2, cursorPosY + 12, 0xFFFFAA00);
